@@ -1,10 +1,13 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "/vite.svg";
+import "./App.css";
+import Layout from "./components/Layout";
+import LoginPage from "./features/Auth/LoginPage";
 
-function App() {
-  const [count, setCount] = useState(0)
+function HomePage() {
+  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -29,7 +32,27 @@ function App() {
         Click on the Vite and React logos to learn more
       </p>
     </>
-  )
+  );
 }
 
-export default App
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <Layout>
+              <HomePage />
+            </Layout>
+          } 
+        />
+        <Route path="/login" element={<LoginPage />} />
+        {/* Add more routes here as needed */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
