@@ -29,7 +29,7 @@ export default function NavigationDrawer({
         style={{ width: "280px" }}
       >
         <div className="p-4 flex justify-between items-center border-b border-blue-200">
-          <span className="font-bold text-blue-900">Menu</span>
+          <span className="font-bold text-blue-900">Go! Home Portal</span>
           <button
             onClick={onClose}
             className="text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md p-1"
