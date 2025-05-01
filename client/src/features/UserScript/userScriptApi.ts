@@ -3,7 +3,7 @@ import { UserScript } from "./UserScript";
 export const saveUserScript = async (
   scriptData: Omit<UserScript, "uniqueId" | "createdBy" | "createdAt">
 ): Promise<UserScript> => {
-  const response = await fetch("/userscript", {
+  const response = await fetch("/api/userscript", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const saveUserScript = async (
 };
 
 export const getUserScript = async (id: string): Promise<UserScript> => {
-  const response = await fetch(`/userscript/${id}`);
+  const response = await fetch(`/api/userscript/${id}`);
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -25,7 +25,7 @@ export const getUserScript = async (id: string): Promise<UserScript> => {
 };
 
 export const getAllUserScripts = async (): Promise<UserScript[]> => {
-  const response = await fetch("/userscripts");
+  const response = await fetch("/api/userscripts");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -33,7 +33,7 @@ export const getAllUserScripts = async (): Promise<UserScript[]> => {
 };
 
 export const deleteUserScript = async (id: string): Promise<void> => {
-  const response = await fetch(`/userscript/${id}`, {
+  const response = await fetch(`/api/userscript/${id}`, {
     method: "DELETE",
   });
   if (!response.ok && response.status !== 204) {
