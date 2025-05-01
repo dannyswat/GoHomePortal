@@ -1,24 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+// Remove NavLink and useNavigate imports as they are moved to Header/NavigationDrawer
+import Header from "./Header";
+import NavigationDrawer from "./NavigationDrawer";
+import Footer from "./Footer";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const navigate = useNavigate();
+  // Keep state and refs related to drawer in the parent Layout
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
 
-  // Close drawer when clicking outside
+  // Close drawer when clicking outside (logic remains here)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
+      // Check if the click is outside the drawer *and* not on the menu button (implicitly handled by drawerRef check)
       if (
         drawerRef.current &&
         !drawerRef.current.contains(event.target as Node) &&
         isDrawerOpen
       ) {
-        setIsDrawerOpen(false);
+        // Check if the click target is *not* the menu button itself or inside it
+        // This prevents immediate closing if the menu button is clicked again
+        const menuButton = document.querySelector('button[aria-label="Menu"]');
+        if (!menuButton || !menuButton.contains(event.target as Node)) {
+          setIsDrawerOpen(false);
+        }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
@@ -27,7 +36,7 @@ export default function Layout({ children }: LayoutProps) {
     };
   }, [isDrawerOpen]);
 
-  // Handle escape key to close drawer
+  // Handle escape key to close drawer (logic remains here)
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === "Escape" && isDrawerOpen) {
@@ -40,199 +49,38 @@ export default function Layout({ children }: LayoutProps) {
     };
   }, [isDrawerOpen]);
 
-  // Prevent scrolling when drawer is open on mobile
+  // Prevent scrolling when drawer is open on mobile (logic remains here)
   useEffect(() => {
     if (isDrawerOpen) {
       document.body.classList.add("overflow-hidden", "md:overflow-auto");
     } else {
       document.body.classList.remove("overflow-hidden", "md:overflow-auto");
     }
+    // Cleanup function to remove classes when component unmounts or drawer closes
+    return () => {
+      document.body.classList.remove("overflow-hidden", "md:overflow-auto");
+    };
   }, [isDrawerOpen]);
+
+  const handleMenuClick = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+  };
 
   return (
     <div className="flex flex-col min-h-screen relative">
-      {/* Top Bar */}
-      <header className="bg-blue-100 text-blue-900 shadow-md">
-        <div className="w-full max-w-7xl mx-auto px-4 py-3 md:py-4 flex items-center">
-          <button
-            className="text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md p-1"
-            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
-            aria-label="Menu"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </button>
+      {/* Use Header component */}
+      <Header onMenuClick={handleMenuClick} />
 
-          {/* Search - hidden on small mobile, expands on larger screens */}
-          <div className="mx-4 flex-grow hidden sm:block">
-            <input
-              type="text"
-              placeholder="Search..."
-              className="border border-blue-300 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-200 w-full max-w-xl"
-              aria-label="Search"
-            />
-          </div>
-
-          {/* Icons for small screens */}
-          <div className="flex sm:hidden ml-auto space-x-2">
-            <button
-              aria-label="Search"
-              className="text-blue-900 p-1 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </button>
-            <button
-              aria-label="Login"
-              className="text-blue-900 p-1 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md"
-              onClick={() => navigate("/login")}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </button>
-          </div>
-
-          {/* Login button for larger screens */}
-          <button
-            className="hidden sm:flex items-center space-x-1 ml-4 text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md px-3 py-1"
-            onClick={() => navigate("/login")}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-            <span>Login</span>
-          </button>
-        </div>
-      </header>
-
-      {/* Responsive Drawer Navigation Menu with overlay */}
-      <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-10 transition-opacity duration-300 ${
-          isDrawerOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-      ></div>
-      <div
-        ref={drawerRef}
-        className={`fixed top-0 left-0 h-full bg-blue-50 shadow-lg z-20 transform transition-transform duration-300 ease-in-out ${
-          isDrawerOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-        style={{ width: "280px" }}
-      >
-        <div className="p-4 flex justify-between items-center border-b border-blue-200">
-          <span className="font-bold text-blue-900">Menu</span>
-          <button
-            onClick={() => setIsDrawerOpen(false)}
-            className="text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-300 rounded-md p-1"
-            aria-label="Close menu"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-        <nav className="p-4">
-          <ul className="space-y-2">
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 rounded hover:bg-blue-100 transition-colors duration-200"
-              >
-                Home
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 rounded hover:bg-blue-100 transition-colors duration-200"
-              >
-                About
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 rounded hover:bg-blue-100 transition-colors duration-200"
-              >
-                Contact
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 rounded hover:bg-blue-100 transition-colors duration-200"
-              >
-                Services
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="block py-2 px-3 rounded hover:bg-blue-100 transition-colors duration-200"
-              >
-                FAQ
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+      {/* Use NavigationDrawer component */}
+      <NavigationDrawer
+        isOpen={isDrawerOpen}
+        onClose={handleCloseDrawer}
+        drawerRef={drawerRef}
+      />
 
       {/* Main Content */}
       <main className="flex-grow bg-blue-50">
@@ -241,12 +89,8 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-blue-100 text-blue-900 text-center">
-        <div className="w-full max-w-7xl mx-auto px-4 py-3 md:py-4 text-sm md:text-base">
-          All rights reserved &copy; {new Date().getFullYear()} Dannys
-        </div>
-      </footer>
+      {/* Use Footer component */}
+      <Footer />
     </div>
   );
 }

@@ -25,7 +25,7 @@ const LoginPage: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-blue-50">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-blue-900">Login</h1>
+          <h1 className="text-3xl font-bold text-blue-900">Home Portal</h1>
           <p className="text-gray-600 mt-2">
             Welcome back! Please sign in to your account
           </p>

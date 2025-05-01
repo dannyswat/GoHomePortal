@@ -5,6 +5,7 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import Layout from "./components/Layout";
 import LoginPage from "./features/Auth/LoginPage";
+import UserScriptPage from "./features/UserScript/UserScriptPage";
 
 function HomePage() {
   const [count, setCount] = useState(0);
@@ -39,16 +40,23 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <Layout>
               <HomePage />
             </Layout>
-          } 
+          }
+        />
+        <Route
+          path="/scripts"
+          element={
+            <Layout>
+              <UserScriptPage />
+            </Layout>
+          }
         />
         <Route path="/login" element={<LoginPage />} />
-        {/* Add more routes here as needed */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
